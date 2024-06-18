@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.newstwo;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 @Controller
 @RequestMapping("/news")
@@ -56,7 +55,7 @@ public class NewsWebController {
 	}
 	
 	@GetMapping("/delete/{aid}")
-	public String deleteNews(@PathVariable int aid, Model m) {
+	public String deleteNews(@PathVariable("aid") int aid, Model m) {
 		try {
 			dao.delNews(aid);
 		}catch(SQLException e) {
@@ -82,7 +81,7 @@ public class NewsWebController {
 	}
 	
 	@GetMapping("/{aid}")
-	public String getNews(@PathVariable int aid, Model m) {
+	public String getNews(@PathVariable("aid") int aid, Model m) {
 		try {
 			News n = dao.getNews(aid);
 			m.addAttribute("news", n);
