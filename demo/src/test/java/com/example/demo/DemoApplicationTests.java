@@ -1,13 +1,17 @@
 package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.answer.Answer;
 import com.example.demo.question.Question;
 import com.example.demo.question.QuestionRepository;
 
@@ -20,11 +24,17 @@ class DemoApplicationTests {
 	@Autowired
 	private QuestionRepository questionRepository;
 	
+	@Transactional
 	@Test
-	void contextLoads() {
-		List<Question> qList = this.questionRepository.findBySubjectLike("su%");
-		Question q = qList.get(0);
-		assertEquals("subject",q.getSubject());
+	void conteOptional() {
+		Optional<Question> oq = this.questionRepository.findById(2);
+		assertTrue(oq.isPresent());
+		Question q = oq.get();
+		
+		List<Answer> answerList = q.getAnswerList();
+		
+		assertEquals(1, answerList.size());
+		assertEquals("자동 생성", answerList.get(0).getContent()); 
 	}
 
 }

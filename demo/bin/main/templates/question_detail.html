@@ -1,0 +1,39 @@
+<!--<link rel = "stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">-->
+
+
+
+
+<html layout:decorate="~{layout}">
+<div layout:fragment="content" class="container text-center">
+  <div class="row">
+	<!-- th:text="${question.content}" 넣는 형식 꼭 기억하기 -->
+	<h1 style="color: red;" th:text="${question.subject}"></h1>
+	<span>질문: </span><p style="color: gray;" th:text="${question.content}"></p>
+	<hr>
+    <div class="col align-self-start">
+		<!-- 답변 표시하기 -->
+		<!-- #은 선택된 필드의 표현식-->
+		<h5 style="color: green; text-align:left;"  th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+		<div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item" style="text-align:right" th:each="answer : ${question.answerList}" th:text="${answer.content}"></li>
+			</ul>	
+		</div>
+			
+    </div>
+	<hr>
+    <div class="col align-self-center">
+		<!-- @{|/answer/create/${question.id}|} |, } 위치 파악 잘하기 -->
+		<form th:action="@{|/answer/create/${question.id}|}" method="post">
+			<div class="form-floating">
+			  <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"
+			  	name = "content" row="15"></textarea>
+			  <label for="floatingTextarea2">답변 등록</label>
+			  <input type="submit" value="답변 등록">
+			</div>
+		</form>
+    </div>
+    
+  </div>
+</div>
+</html>
