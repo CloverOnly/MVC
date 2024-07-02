@@ -1,0 +1,402 @@
+1. 데이터 저장
+package com.example.demo;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		Question q1 = new Question();
+		q1.setSubject("subject");
+		q1.setContent("content");
+		q1.setCreateDate(LocalDateTime.now());
+		this.questionRepository.save(q1);
+		
+		Question q2 = new Question();
+		q2.setSubject("subject");
+		q2.setContent("content");
+		q2.setCreateDate(LocalDateTime.now());
+		this.questionRepository.save(q2);
+	}
+
+}
+
+
+2. 예상한 결과와 실제 결과가 동일한지를 확인
+package com.example.demo;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		List<Question> all = this.questionRepository.findAll();
+		assertEquals(2,all.size());
+		
+		Question q  = all.get(0);
+		assertEquals("subject", q.getSubject());
+	}
+
+}
+
+
+3. 데이터의 제목이 데이터와 일치하는지 테스트
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		Optional<Question>_q = this.questionRepository.findById(1);
+		if(_q.isPresent()) {
+			Question q = _q.get();
+			assertEquals("subject", q.getSubject());
+		}
+	}
+
+}
+
+
+4. 값이 일치하는지 확인, 입력한 속성의 값으로 데이터 조회 가능
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		Question q = this.questionRepository.findBySubject("subject");
+		assertEquals(1,q.getId());
+	}
+
+}
+
+
+5. 일치하는지 확인
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		Question q = this.questionRepository.findBySubjectAndContent("subject", "content");
+		assertEquals(1,q.getId());
+	}
+
+}
+
+
+6. 질문 데이터 조회
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		List<Question> qList = this.questionRepository.findBySubjectLike("su%");
+		Question q = qList.get(0);
+		assertEquals("subject",q.getSubject());
+	}
+
+}
+
+
+7. 데이터 수정하기
+package com.example.demo;
+
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void contextLoads() {
+		Optional<Question> oq=this.questionRepository.findById(1);
+		assertTrue(oq.isPresent());	//중요한 부분, 값이 true 인지 체크 한다.
+		Question q = oq.get();
+		q.setSubject("수정");
+		this.questionRepository.save(q);
+	}
+
+}
+
+
+8. 데이터 삭제하기
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Test
+	void conteOptional() {
+		assertEquals(2, this.questionRepository.count());
+		Optional<Question> oq = this.questionRepository.findById(1);
+		assertTrue(oq.isPresent());
+		Question q = oq.get();
+		this.questionRepository.delete(q);
+
+		//assertEquals: 예상값이 실제 값이 같은지 확인
+		assertEquals(1,questionRepository.count());
+	}
+
+}
+
+
+9. 데이터 저장하기
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.answer.Answer;
+import com.example.demo.answer.AnswerRepository;
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Autowired
+	AnswerRepository answerRepository;
+	
+	@Test
+	void conteOptional() {
+		//question 에 id 2가 있는지 확인
+		Optional<Question> oq = this.questionRepository.findById(2);
+		assertTrue(oq.isPresent());
+		//q = findById(2)
+		Question q = oq.get();
+		
+		Answer a = new Answer();
+		//저장
+		a.setContent("자동 생성");
+		a.setQuestion(q);
+		a.setCreateDate(LocalDateTime.now());
+		this.answerRepository.save(a);
+	}
+
+}
+
+
+10. 데이터 조회하기
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.example.demo.answer.Answer;
+import com.example.demo.answer.AnswerRepository;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Autowired
+	AnswerRepository answerRepository;
+	
+	@Test
+	void conteOptional() {
+		Optional<Answer> oa = this.answerRepository.findById(1);
+		assertTrue(oa.isPresent());
+		//optional 을 answer 형으로 바꾸는 작업
+		Answer a = oa.get();
+		//question 을 조회하여 같은지 확인
+		assertEquals(2,a.getQuestion().getId());
+	}
+
+}
+
+
+11. 답변 데이터를 통해 질문 데이터 찾기 vs 질문 데이터를 통해 답변 데이터 찾기 
+package com.example.demo;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.answer.Answer;
+import com.example.demo.question.Question;
+import com.example.demo.question.QuestionRepository;
+
+
+
+
+@SpringBootTest
+class DemoApplicationTests {
+	
+	@Autowired
+	private QuestionRepository questionRepository;
+	
+	@Transactional
+	@Test
+	void conteOptional() {
+		Optional<Question> oq = this.questionRepository.findById(2);
+		assertTrue(oq.isPresent());
+		Question q = oq.get();
+		
+		List<Answer> answerList = q.getAnswerList();
+		
+		assertEquals(1, answerList.size());
+		assertEquals("자동 생성", answerList.get(0).getContent()); 
+	}
+
+}
