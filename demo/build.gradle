@@ -25,18 +25,27 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	compileOnly 'org.projectlombok:lombok' 
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'  
+     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+     runtimeOnly 'com.mysql:mysql-connector-j'   
+	 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	testImplementation 'org.junit.jupiter:junit-jupiter' 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.commonmark:commonmark:0.21.0'
+	runtimeOnly 'org.postgresql:postgresql'
+	
 }
 
 tasks.named('test') {
