@@ -10,12 +10,20 @@
 	
     <div class="col align-self-start">
 		<!-- 답변 표시하기 -->
-		<!-- #은 선택된 필드의 표현식-->
-		<h5 style="color: green;"  th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
-		<div>
-			<ul class="list-group list-group-flush">
-				<li class="list-group-item" style="text-align:right" th:each="answer : ${question.answerList}" th:text="${answer.content}"></li>
-			</ul>	
+		<div class="col align-self-start">
+			<!-- #은 선택된 필드의 표현식-->
+			<h5 style="color: green;" th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+		    <div>
+		        <ul class="list-group list-group-flush">
+		            <li class="list-group-item" style="text-align:left" th:each="answer : ${question.answerList}">
+		                <p th:text="${answer.content}"></p>
+		                <p style="text-align:right" th:if="${answer.author != null}" th:text="${answer.author.username}"></p>
+						<p><a th:href="@{|/question/modify/${question.id}|}" 
+											sec:authorize="isAuthenticated()" th:if="${question.author != null and #authentication.
+											getPrincipal().getUsername() == question.author.username}" th:text="수정"></a></p>
+		            </li>
+		        </ul>   
+		    </div>
 		</div>
 			
     </div>
@@ -25,7 +33,8 @@
 		<form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}"| method="post">
 			<div th:replace="~{form_errors :: formErrorsFragment}"></div>	
 			<div class="form-floating">
-			  <textarea th:field="*{content}" rows="10" class="form-control"></textarea>
+			  <textarea sec:authorize="isAnonymous()" th:field="*{content}" rows="10" class="form-control"></textarea>
+			  <textarea sec:authorize="isAuthenticated()" th:field="*{content}" rows="10" class="form-control"></textarea>
 			  <label for="floatingTextarea2">답변 등록</label>
 			  <input type="submit" value="답변 등록">
 			</div>

@@ -4,21 +4,21 @@
 <div layout:fragment="content" class="container my-3">
 	<table class="table">
 		<thead class="table-warning">
-			<tr>
-				<td>번호</td>
-				<td>제목</td>
-				<td>내용</td>
-				<td>작성일자</td>
+			<tr class="text-center">
+				<th>번호</th>
+				<th style="width:50%">제목</th>
+				<th>글쓴이</th>
+				<th>작성일자</th>
 			</tr>
 		</thead>
 		<tbody>
 			<!--paging으로 전달하기 때문에 잘문 목록 템플릿 변경 ${paging}-->
-			<tr th:each="question, loop : ${paging}">
+			<tr class="text-center" th:each="question, loop : ${paging}">
 					
 			<!--게시물 번호 공식 적용-->
 				<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td>
 					
-				<td>
+				<td class="text-start">
 					<a th:href="@{|/question/detail/${question.id}|}"
 						th:text="${question.subject}"></a>
 					<span class="text-danger small ms-2"
@@ -26,7 +26,11 @@
 						th:text="${#lists.size(question.answerList)}">
 					</span>	
 				</td>
-				<td th:text="${question.content}"></td>
+				
+				<td>
+					<span th:if="${question.author != null}"
+					th:text="${question.author.username}"></span>
+				</td>	
 				<td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></td>
 			</tr>
 		</tbody>
@@ -57,4 +61,5 @@
 	<!--질문 -->
 	<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
 </div>	
-</html>														
+</html>	
+
