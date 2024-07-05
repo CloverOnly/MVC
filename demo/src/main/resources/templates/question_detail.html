@@ -1,12 +1,31 @@
 <!--링크를 쓰는대신 layout을 사용-->
 <!--<link rel = "stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">-->
 
+
+
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container text-center">
   <div class="row">
 	<!-- th:text="${question.content}" 넣는 형식 꼭 기억하기 -->
 	<h1 style="color: red;" th:text="${question.subject}"></h1>
+	<p style="text-align:right">
+		<a th:href="@{|/question/modify/${question.id}|}" 
+			sec:authorize="isAuthenticated()" th:if="${question.author != null and #authentication.
+			getPrincipal().getUsername() == question.author.username}" th:text="수정 |"></a>
+		
+		<a href="javascript:void(0);"
+			th:data-uri="@{|/question/delete/${question.id}|}" class="delete"	
+			sec:authorize="isAuthenticated()" th:if="${question.author != null and
+			#authentication.getPrincipal().getUsername() == question.author.username}"
+			th:text=" 삭제"></a>
+		
+		<a href="javascript:void(0);" class="recommend"
+			th:data-uri="@{|/question/vote/${question.id}|}">추천
+			<span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
+		</a>			
+	</p>
 	<span>질문: </span><p style="color: gray;" th:text="${question.content}"></p>
+	
 	
     <div class="col align-self-start">
 		<!-- 답변 표시하기 -->
@@ -16,11 +35,24 @@
 		    <div>
 		        <ul class="list-group list-group-flush">
 		            <li class="list-group-item" style="text-align:left" th:each="answer : ${question.answerList}">
+						<!--답변을 작성하거나 수정하면 페이지 상단으로 스크롤 이동 앵커-->
+						<a th:id="|answer_${answer.id}|"></a>
 		                <p th:text="${answer.content}"></p>
 		                <p style="text-align:right" th:if="${answer.author != null}" th:text="${answer.author.username}"></p>
-						<p><a th:href="@{|/question/modify/${question.id}|}" 
-											sec:authorize="isAuthenticated()" th:if="${question.author != null and #authentication.
-											getPrincipal().getUsername() == question.author.username}" th:text="수정"></a></p>
+						<p style="text-align:left">
+							<a th:href="@{|/answer/modify/${answer.id}|}" sec:authoriz="isAuthenticated()"
+							th:if="${answer.author != null and #authentication.getPrincipal().getUsername()
+								== answer.author.username}" th:text="수정"></a>
+							<a href="javascript:void(0);"
+								th:data-uri="@{|/answer/delete/${answer.id}|}" class="delete"	
+								sec:authorize="isAuthenticated()" th:if="${answer.author != null and
+								#authentication.getPrincipal().getUsername() == answer.author.username}"
+								th:text=" 삭제"></a>	
+							<a href="javascript:void(0);" class="recommend"
+								th:data-uri="@{|/answer/vote/${answer.id}|}">추천
+								<span class="badge rounded-pill bg-success" th:text="${#lists.size(answer.voter)}"></span>
+							</a>	
+						</p>
 		            </li>
 		        </ul>   
 		    </div>
@@ -43,4 +75,24 @@
     
   </div>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element){
+	element.addEventListener('click', function(){
+		if(confirm("정말로 삭제하시겠습니까?")){
+			location.href=this.dataset.uri;
+		};
+	});
+});
+
+const recommend_elements = document.getElementsByClassName("recommend");
+Array.from(recommend_elements).forEach(function(element){
+	element.addEventListener('click', function(){
+		if(confirm("정말로 추천하시겠습니까?")){
+			location.href = this.dataset.uri;
+		};
+	});
+});
+
+</script>
 </html>
